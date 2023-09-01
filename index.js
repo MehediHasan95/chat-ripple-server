@@ -47,6 +47,38 @@ async function run() {
       res.send(results);
     });
 
+    app.patch("/user-profile/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      await userCollection.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: data,
+        }
+      );
+      res.send(SUCCESS_MESSAGE);
+    });
+
+    app.patch("/activity-status/:uid", async (req, res) => {
+      const uid = req.params.uid;
+      if (uid !== "undefined") {
+        await userCollection.updateOne(
+          { uid: { $eq: uid } },
+          {
+            $set: req.body,
+          }
+        );
+        res.send(SUCCESS_MESSAGE);
+      }
+    });
+
+    setTimeout(async () => {
+      await userCollection.updateMany(
+        { status: true },
+        { $set: { status: false } }
+      );
+    }, 1 * 60 * 1000);
+
     app.get("/suggest-friends/:uid", async (req, res) => {
       const matched = await userCollection.findOne({
         uid: { $eq: req.params.uid },
