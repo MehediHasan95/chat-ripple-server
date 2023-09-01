@@ -72,12 +72,12 @@ async function run() {
       }
     });
 
-    setTimeout(async () => {
+    setInterval(async () => {
       await userCollection.updateMany(
         { status: true },
         { $set: { status: false } }
       );
-    }, 1 * 60 * 1000);
+    }, 2 * 60 * 1000);
 
     app.get("/suggest-friends/:uid", async (req, res) => {
       const matched = await userCollection.findOne({
